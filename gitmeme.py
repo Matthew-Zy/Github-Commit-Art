@@ -21,5 +21,13 @@ print(today)
 print(timedelta(days=today.weekday()))
 
 def make_commit(days_ago: int):
-    with open(file_name, "a"):
-        
+    date = datetime.today()
+    dateStr = date.strftime("%a %b %d %I:%M %Y")
+    print(dateStr)
+    with open(file_name, "a") as f:
+        f.write("soy")
+    subprocess.run(["git", "add", file_name])
+    # subprocess.run(["git", "commit", file_name, "-m", "random", ]) # both should theoretically work
+    subprocess.run(["git", "commit", "--amend", "-m", "some stuff", f'--date="{dateStr}"',])
+
+make_commit(0)

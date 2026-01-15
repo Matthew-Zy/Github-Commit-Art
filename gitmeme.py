@@ -17,22 +17,15 @@ Random_content_msg: List[str] = [
     "wow", "I love", "The mona"
 ]
 
-
-today = datetime.today()
-print(today.day)
-print(today)
-
-print(timedelta(days=today.weekday()))
-
 def make_commit(date: datetime):
     # date = datetime.today()
     dateStr = date.strftime("%a %b %d %I:%M %Y")
     print(dateStr)
     with open(file_name, "a+") as f:
         f.write("soy")
-    # subprocess.run(["git", "add", file_name])
+    subprocess.run(["git", "add", file_name])
     # subprocess.run(["git", "commit", file_name, f'{days_ago} day ago', "-m", "random"]) # both should theoretically work
-    # subprocess.run(["git", "commit", "--amend", "-m", "some stuff", f'--date="{dateStr}"',])
+    subprocess.run(["git", "commit", "--amend", "-m", "some stuff", f'--date="{dateStr}"',])
 
 # 
 
@@ -87,9 +80,13 @@ def create_days_to_commit(year: int, commit_arr: List[int] = None):
     day_week: int  = first_day_of_year.isoweekday() % 7 # make sunday day 0 instead
     last_day_week: int = abs(last_day_of_year.isoweekday()%7 - 6) #saturday = 0, and sunday = 6
     commit_arr = commit_arr[day_week: len(commit_arr) - last_day_week] 
-    print(len(commit_arr))
+    
+    # convert to a dict and then filter out key value pairs where the value is 0
+    b = {index: value for index, value in enumerate(commit_arr)}
+    b = {k: v for k, v in b.items() if (lambda val: val != 0)(v)}
+    return b
 
 ima = open_image("zy.png")
 c = calculate_commits(ima)
 
-create_days_to_commit(2024, c)
+print(len( create_days_to_commit(2024, c)))

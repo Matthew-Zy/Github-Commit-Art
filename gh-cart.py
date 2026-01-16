@@ -100,9 +100,6 @@ def create_commit_dict(img_path: str, year: int, max_commit_per_day: int) -> dic
     
 
 def parse_args():
-    write_fp = "amongla.txt"
-    img_path = "zy.png"
-    year = None
 
     parser = argparse.ArgumentParser(
         prog='Commit art maker',
@@ -115,7 +112,7 @@ def parse_args():
     parser.add_argument('-of', '--outfile', type=str, default="amongla.txt", help='What file to write random commits to')
     parser.add_argument('-i', '--image', type=str, default="input_image.png", help='Input image to base commits off of')
     parser.add_argument('--init', action=argparse.BooleanOptionalAction, default=False, help='specify whether to let the program initialize your repo')
-    parser.add_argument('-p', '--push', type=str, default=None, help='Automatically push newly created repo')
+    parser.add_argument('-r', '--remote', type=str, default=None, help='Automatically push newly created repo')
     args = parser.parse_args()
     return vars(args)
 
@@ -136,5 +133,6 @@ if __name__ == '__main__':
 
     if args['push'] != None:
         subprocess.run(['git', 'branch', '-M', 'main'], cwd=file_path.parent)
-        subprocess.run(['git', 'remote', 'add', args['push']], cwd=file_path.parent)
+        subprocess.run(['git', 'remote', 'add', 'origin', args['push']], cwd=file_path.parent)
         subprocess.run(['git', 'push', '-u', 'origin', 'main'], cwd=file_path.parent)
+        print("Pushed stuff")

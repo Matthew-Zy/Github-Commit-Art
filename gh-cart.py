@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from typing import List, Dict
-import random, argparse, subprocess, io
+import random, argparse, subprocess, os
 from pathlib import Path
 from math import floor
 
@@ -24,15 +24,17 @@ def get_random_phrase(Phrases: List[str]) -> str:
 
 def make_commit(date: datetime, file_path: Path):
     dateStr = date.strftime("%a %b %d %I:%M %Y")
-    print(dateStr)
+    # print(dateStr)
     with open(file_path, 'a+') as f:
         f.write(get_random_phrase(Random_content_msg) + '\n')
-        
-    subprocess.run(["git", "add", file_path], cwd=file_path.parent)
+    
+    repo_dir = file_path.parent
+    file_name = file_path.name
+    subprocess.run(["git", "add", file_name], cwd=repo_dir)
     # subprocess.run(["git", "commit", file_name, f'{days_ago} day ago', "-m", "random"]) # both should theoretically work
     subprocess.run(
-        ["git", "commit", "--amend", "-m", get_random_phrase(Random_commit_msg), f'--date="{dateStr}"'],
-        cwd = file_path.parent)
+        ["git", "commit", "--allow-empty", "-m", get_random_phrase(Random_commit_msg), f'--date="{dateStr}"'],
+        cwd = repo_dir)
 
 
 def make_commits_for_year(year: int, days_to_commit: Dict[int, int], file_path):
@@ -43,7 +45,7 @@ def make_commits_for_year(year: int, days_to_commit: Dict[int, int], file_path):
         commit_day = commit_day + timedelta(days=day)
         for i in range(days_to_commit[day]):
             commit_day = commit_day + timedelta(minutes=2)
-            # make_commit(commit_day, file_path)
+            make_commit(commit_day, file_path)
             pass
         
 # returns a flattened array of the grayscale values of in "sort of" the chronological order for github commits
@@ -112,6 +114,8 @@ def parse_args():
     parser.add_argument('-mc', '--maxcommits', type=int, default=1, help='max commits a day')
     parser.add_argument('-of', '--outfile', type=str, default="amongla.txt", help='What file to write random commits to')
     parser.add_argument('-i', '--image', type=str, default="input_image.png", help='Input image to base commits off of')
+    parser.add_argument('--init', action=argparse.BooleanOptionalAction, default=False, help='specify whether to let the program initialize your repo')
+    parser.add_argument('-p', '--push', type=str, default=None, help='Automatically push newly created repo')
     args = parser.parse_args()
     return vars(args)
 
@@ -123,6 +127,14 @@ if __name__ == '__main__':
     c_dict = create_commit_dict(args['image'], args['year'], args['maxcommits'])
     file_path: Path = Path(args['outfile'])
     file_path.parent.mkdir(exist_ok=True, parents=True)
-
+    
+    if args['init'] == True or args['push'] != None:
+        subprocess.run(['git', 'init'], cwd= file_path.parent)
+    
     make_commits_for_year(args['year'], c_dict, file_path)
     print("Successfully made our commits for the year :smiley:")
+
+    if args['push'] != None:
+        subprocess.run(['git', 'branch', '-M', 'main'], cwd=file_path.parent)
+        subprocess.run(['git', 'remote', 'add', args['push']], cwd=file_path.parent)
+        subprocess.run(['git', 'push', '-u', 'origin', 'main'], cwd=file_path.parent)

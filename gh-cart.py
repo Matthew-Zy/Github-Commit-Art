@@ -125,13 +125,13 @@ if __name__ == '__main__':
     file_path: Path = Path(args['outfile'])
     file_path.parent.mkdir(exist_ok=True, parents=True)
     
-    if args['init'] == True or args['push'] != None:
+    if args['init'] == True or args['remote'] != None:
         subprocess.run(['git', 'init'], cwd= file_path.parent)
     
     make_commits_for_year(args['year'], c_dict, file_path)
     print("Successfully made our commits for the year :smiley:")
 
-    if args['push'] != None:
+    if args['remote'] != None:
         subprocess.run(['git', 'branch', '-M', 'main'], cwd=file_path.parent)
         subprocess.run(['git', 'remote', 'add', 'origin', args['push']], cwd=file_path.parent)
         subprocess.run(['git', 'push', '-u', 'origin', 'main'], cwd=file_path.parent)

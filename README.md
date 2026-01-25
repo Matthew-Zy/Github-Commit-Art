@@ -26,7 +26,7 @@ python gh-cart.py -h
 python gh-cart.py 2020 
 # change output to be a folder next to the folder gh-cart.py is currently in
 # also initialize and push the repo to a remote of given link
-python gh-cart.py 2006 -o ../newfolder/text.txt -of fun.png --remote some_remote_repository_link 
+python gh-cart.py 2006 -of ../newfolder/text.txt -i fun.png --remote some_remote_repository_link 
 
 # make max commits a day 30 (defaulted at one)
 python gh-cart.py 2025 -mc 30 

@@ -3,16 +3,17 @@ from typing import List, Dict
 import random, argparse, subprocess, os
 from pathlib import Path
 from math import floor
-
 from PIL import Image
 
 
 
 Random_commit_msg: List[str] = [
-    "Pikachu", "Obama", "Sussy AMogus"
+    "Pikachu", "Obama", "Sussy AMogus", "this is a commit of all time", "im really funny guys...", "Im voiding it so HARD i love VOIding IT", 
+    "sigma skiidi ohio", "god I am so skibidi", "ohio rizzler mew", "MY TOWER BATTLES", "stand ready for my conquesting it"
 ]
 Random_content_msg: List[str] = [
-    "wow", "I love", "The mona", "AMONGUS", "I LOVE AMONGUS"
+    "wow", "I love", "The mona lisa", "AMONGUS", "I LOVE AMONGUS", "This is... my tower battles", "That's reeftastic", "what the sigma",
+    "This is... my epic adventure", "can I get uhhh number 9", "are you sure", "I am marking it so good it feels so good to be marking it"
 ]
 
 def get_random_phrase(Phrases: List[str]) -> str:
@@ -61,18 +62,23 @@ def open_image(file_path: str) -> List[int]:
             gs_arr.append(img.getpixel((x, y)))
     return gs_arr
 
-def calculate_commits(pixels: List[int], max_commit_a_day):
+def calculate_commits(pixels: List[int], max_commit_a_day, randomCommit: bool):
     commit_arr: List[int] = []
 
     for p in pixels:
         normalized = p * (max_commit_a_day / 256) + 1
         # adding the one to prevent divide by 0 and also cause i cant make a proper math equation
-        value = max_commit_a_day / normalized
-        commit_arr.append(floor(value))
+        value = floor(max_commit_a_day / normalized)
+
+        if randomCommit == True:
+            value = random.randint(0, value)
+
+        commit_arr.append(value)
     
     return commit_arr
 
-def create_days_to_commit(year: int, commit_arr: List[int] = None):
+# returns a dictionary of stuff 
+def create_days_to_commit(year: int, commit_arr: List[int] = None) -> Dict[int, int]:
     if commit_arr is None:
         return
     first_day_of_year = datetime(year=year, month=1, day=1)
@@ -93,9 +99,9 @@ c = calculate_commits(ima)
 
 print(len( create_days_to_commit(2024, c)))
 '''
-def create_commit_dict(img_path: str, year: int, max_commit_per_day: int) -> dict[int, int]:
+def create_commit_dict(img_path: str, year: int, max_commit_per_day: int, randomCommit: bool) -> dict[int, int]:
     img = open_image(img_path)
-    img = calculate_commits(img, max_commit_per_day)
+    img = calculate_commits(img, max_commit_per_day, randomCommit)
     return create_days_to_commit(year, img)
     
 
@@ -108,9 +114,10 @@ def parse_args():
         epilog='why are you here'
     )
     parser.add_argument('year', type=int)
-    parser.add_argument('-mc', '--maxcommits', type=int, default=1, help='max commits a day')
-    parser.add_argument('-of', '--outfile', type=str, default="amongla.txt", help='What file to write random commits to')
+    parser.add_argument('-mc', '--maxcommits', type=int, default=2, help='max commits a day DEFAULT=2')
+    parser.add_argument('-of', '--outfile', type=str, default="output.txt", help='What file to write random commits to')
     parser.add_argument('-i', '--image', type=str, default="input_image.png", help='Input image to base commits off of')
+    parser.add_argument('--random', action=argparse.BooleanOptionalAction, default=False, help='makes random commits [0, maxcommits] (highly recommend setting max commits to > 5 for a more realistic outcome)')
     parser.add_argument('--init', action=argparse.BooleanOptionalAction, default=False, help='specify whether to let the program initialize your repo')
     parser.add_argument('-r', '--remote', type=str, default=None, help='Automatically push newly created repo')
     args = parser.parse_args()
@@ -119,14 +126,13 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    print(args)
 
-    c_dict = create_commit_dict(args['image'], args['year'], args['maxcommits'])
+    c_dict = create_commit_dict(args['image'], args['year'], args['maxcommits'], args['random'])
     file_path: Path = Path(args['outfile'])
     file_path.parent.mkdir(exist_ok=True, parents=True)
     
     if args['init'] == True or args['remote'] != None:
-        subprocess.run(['git', 'init'], cwd= file_path.parent)
+        subprocess.run(['git', 'init'], cwd=file_path.parent)
     
     make_commits_for_year(args['year'], c_dict, file_path)
     print("Successfully made our commits for the year :smiley:")

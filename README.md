@@ -2,6 +2,7 @@
 - Make your empty years on github have a commit art!! yippee for lazy people.
 - Use this to also decorate your github contribution history with little art snippets 
 - the ~7x53 ish canvas size for github contributions can have fun things drawn on
+- DOES SUPPORT leap years (cracked programmer I am)
 
 ### Requirements:
 - Python interpreter that supports pillow
@@ -30,6 +31,9 @@ python gh-cart.py 2006 -of ../newfolder/text.txt -i fun.png --remote some_remote
 
 # make max commits a day 30 (defaulted at one)
 python gh-cart.py 2025 -mc 30 
+
+# Randomized commit using the black image (illusion of cracked developer) with 5 max commits in the file ../Gh_art/text.txt
+python gh-cart.py 2023 -of ../Gh_art/text.txt -i imageblack.png -mc 5 --random
 ```
 ## Why did I make this?
 - So apparently, you can make commits in the future and past using git, and github does use those timestamps to well, show those commits on your account.  

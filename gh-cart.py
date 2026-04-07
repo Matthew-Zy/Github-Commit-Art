@@ -8,10 +8,12 @@ from PIL import Image
 
 
 Random_commit_msg: List[str] = [
-    "Pikachu", "Obama", "Sussy AMogus"
+    "Pikachu", "Obama", "Sussy AMogus", "this is a commit of all time", "im really funny guys...", "Im voiding it so HARD i love VOIding IT", 
+    "sigma skiidi ohio", "god I am so skibidi", "ohio rizzler mew", "MY TOWER BATTLES", "stand ready for my conquesting it"
 ]
 Random_content_msg: List[str] = [
-    "wow", "I love", "The mona", "AMONGUS", "I LOVE AMONGUS"
+    "wow", "I love", "The mona lisa", "AMONGUS", "I LOVE AMONGUS", "This is... my tower battles", "That's reeftastic", "what the sigma",
+    "This is... my epic adventure", "can I get uhhh number 9", "are you sure", "I am marking it so good it feels so good to be marking it"
 ]
 
 def get_random_phrase(Phrases: List[str]) -> str:
@@ -66,12 +68,12 @@ def calculate_commits(pixels: List[int], max_commit_a_day, randomCommit: bool):
     for p in pixels:
         normalized = p * (max_commit_a_day / 256) + 1
         # adding the one to prevent divide by 0 and also cause i cant make a proper math equation
-        value = max_commit_a_day / normalized
+        value = floor(max_commit_a_day / normalized)
 
         if randomCommit == True:
             value = random.randint(0, value)
 
-        commit_arr.append(floor(value))
+        commit_arr.append(value)
     
     return commit_arr
 
@@ -99,7 +101,7 @@ print(len( create_days_to_commit(2024, c)))
 '''
 def create_commit_dict(img_path: str, year: int, max_commit_per_day: int, randomCommit: bool) -> dict[int, int]:
     img = open_image(img_path)
-    img = calculate_commits(img, max_commit_per_day)
+    img = calculate_commits(img, max_commit_per_day, randomCommit)
     return create_days_to_commit(year, img)
     
 
@@ -125,7 +127,7 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    c_dict = create_commit_dict(args['image'], args['year'], args['maxcommits'])
+    c_dict = create_commit_dict(args['image'], args['year'], args['maxcommits'], args['random'])
     file_path: Path = Path(args['outfile'])
     file_path.parent.mkdir(exist_ok=True, parents=True)
     

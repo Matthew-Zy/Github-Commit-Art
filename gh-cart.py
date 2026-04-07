@@ -3,7 +3,6 @@ from typing import List, Dict
 import random, argparse, subprocess, os
 from pathlib import Path
 from math import floor
-
 from PIL import Image
 
 
@@ -68,7 +67,10 @@ def calculate_commits(pixels: List[int], max_commit_a_day, randomCommit: bool):
         normalized = p * (max_commit_a_day / 256) + 1
         # adding the one to prevent divide by 0 and also cause i cant make a proper math equation
         value = max_commit_a_day / normalized
-        value = random.randint(1, value)
+
+        if randomCommit == True:
+            value = random.randint(0, value)
+
         commit_arr.append(floor(value))
     
     return commit_arr
@@ -111,9 +113,9 @@ def parse_args():
     )
     parser.add_argument('year', type=int)
     parser.add_argument('-mc', '--maxcommits', type=int, default=2, help='max commits a day DEFAULT=2')
-    parser.add_argument('-of', '--outfile', type=str, default="amongla.txt", help='What file to write random commits to')
+    parser.add_argument('-of', '--outfile', type=str, default="output.txt", help='What file to write random commits to')
     parser.add_argument('-i', '--image', type=str, default="input_image.png", help='Input image to base commits off of')
-    parser.add_argument('--random', action=argparse.BooleanOptionalAction, default=False, help='makes random commits [1, maxcommits] (highly recommend setting max commits to > 5 for a more realistic outcome)')
+    parser.add_argument('--random', action=argparse.BooleanOptionalAction, default=False, help='makes random commits [0, maxcommits] (highly recommend setting max commits to > 5 for a more realistic outcome)')
     parser.add_argument('--init', action=argparse.BooleanOptionalAction, default=False, help='specify whether to let the program initialize your repo')
     parser.add_argument('-r', '--remote', type=str, default=None, help='Automatically push newly created repo')
     args = parser.parse_args()

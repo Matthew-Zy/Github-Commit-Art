@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from typing import List, Dict
-import random, argparse, subprocess, os
+import random, argparse, subprocess
 from pathlib import Path
 from math import floor
 from PIL import Image
@@ -93,12 +93,6 @@ def create_days_to_commit(year: int, commit_arr: List[int] = None) -> Dict[int, 
     return b
 
 
-'''
-ima = open_image("input_image.png")
-c = calculate_commits(ima)
-
-print(len( create_days_to_commit(2024, c)))
-'''
 def create_commit_dict(img_path: str, year: int, max_commit_per_day: int, randomCommit: bool) -> dict[int, int]:
     img = open_image(img_path)
     img = calculate_commits(img, max_commit_per_day, randomCommit)
@@ -111,12 +105,13 @@ def parse_args():
         prog='Commit art maker',
         usage='python gh-cart.py [year] [option flags]',
         description='Command line tool that gets you more contributions on github',
-        epilog='why are you here'
+        epilog='why are you here',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument('year', type=int)
-    parser.add_argument('-mc', '--maxcommits', type=int, default=2, help='max commits a day DEFAULT=2')
+    parser.add_argument('-mc', '--maxcommits', type=int, default=2, help='max commits a day')
     parser.add_argument('-of', '--outfile', type=str, default="output.txt", help='What file to write random commits to')
-    parser.add_argument('-i', '--image', type=str, default="input_image.png", help='Input image to base commits off of')
+    parser.add_argument('-i', '--image', type=str, default="helloworld.png", help='Input image to base commits off of')
     parser.add_argument('--random', action=argparse.BooleanOptionalAction, default=False, help='makes random commits [0, maxcommits] (highly recommend setting max commits to > 5 for a more realistic outcome)')
     parser.add_argument('--init', action=argparse.BooleanOptionalAction, default=False, help='specify whether to let the program initialize your repo')
     parser.add_argument('-r', '--remote', type=str, default=None, help='Automatically push newly created repo')

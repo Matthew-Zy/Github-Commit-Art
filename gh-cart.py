@@ -134,6 +134,6 @@ if __name__ == '__main__':
 
     if args['remote'] != None:
         subprocess.run(['git', 'branch', '-M', 'main'], cwd=file_path.parent)
-        subprocess.run(['git', 'remote', 'add', 'origin', args['push']], cwd=file_path.parent)
+        subprocess.run(['git', 'remote', 'add', 'origin', args['remote']], cwd=file_path.parent)
         subprocess.run(['git', 'push', '-u', 'origin', 'main'], cwd=file_path.parent)
         print("Pushed stuff")
